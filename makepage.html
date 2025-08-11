@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>厨具宣传海报服务Demo - 步骤2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { background: #f5f8ff; font-family: '微软雅黑', Arial, sans-serif; margin:0;}
+    .container { max-width: 430px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 10px #0001; padding: 28px 18px;}
+    h2 { text-align: center; color: #18449b; }
+    #posterBox { text-align: center; margin: 20px 0;}
+    .poster-canvas { border-radius: 10px; border: 2px solid #18449b; box-shadow: 0 2px 10px #18449b30;}
+    .btn-row { text-align: center; margin-top: 16px;}
+    button { background: #18449b; color: #fff; border: none; border-radius: 6px; padding: 10px 18px; font-size: 1rem; cursor: pointer; }
+    button:disabled { background: #aaa; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>步骤2：生成专属厨具海报</h2>
+  <div id="posterBox"></div>
+  <div class="btn-row">
+    <button id="savePoster">下一步，发布到互联网</button>
+  </div>
+</div>
+<script>
+  // 读取上传图片
+  let toolData = localStorage.getItem('toolData') || '';
+  let cookData = localStorage.getItem('cookData') || '';
+
+  // 生成海报
+  function genPoster() {
+    const w = 360, h = 520;
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.className = 'poster-canvas';
+    const ctx = canvas.getContext('2d');
+    // 背景
+    ctx.fillStyle = "#18449b";
+    ctx.fillRect(0, 0, w, h);
+    // 海报白底
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(18, 18, w-36, h-36);
+
+    // 标题
+    ctx.font = "bold 22px 微软雅黑";
+    ctx.fillStyle = "#18449b";
+    ctx.fillText("五星级厨房好帮手", 32, 52);
+
+    // 厨具图片
+    if (toolData) {
+      let img = new window.Image();
+      img.onload = function() {
+        ctx.drawImage(img, 38, 70, 130, 130);
+        drawCook();
+      };
+      img.src = toolData;
+    } else drawCook();
+
+    function drawCook() {
+      // 烹饪结果
+      if (cookData) {
+        let img2 = new window.Image();
+        img2.onload = function() {
+          ctx.drawImage(img2, 192, 70, 130, 130);
+          drawAdv();
+        };
+        img2.src = cookData;
+      } else drawAdv();
+    }
+
+    // 卖点文案
+    function drawAdv() {
+      ctx.font = "18px 微软雅黑";
+      ctx.fillStyle = "#214eae";
+      ctx.fillText("优质不粘锅面 | 健康烹饪", 38, 235);
+      ctx.fillText("高温防刮 | 导热均匀 | 易清洗", 38, 265);
+
+      ctx.font = "bold 20px 微软雅黑";
+      ctx.fillStyle = "#e56000";
+      ctx.fillText("促销价：¥199", 38, 305);
+
+      // 品牌标语
+      ctx.font = "italic 16px 微软雅黑";
+      ctx.fillStyle = "#666";
+      ctx.fillText("让每一餐都成为艺术", 38, 350);
+
+      // 二维码模拟
+      ctx.fillStyle = "#eee";
+      ctx.fillRect(w-90, h-90, 72, 72);
+      ctx.fillStyle = "#bbb";
+      ctx.font = "14px Arial";
+      ctx.fillText("扫码选购", w-86, h-50);
+
+      // 完成，显示
+      document.getElementById('posterBox').innerHTML = "";
+      document.getElementById('posterBox').appendChild(canvas);
+
+      // 保存数据
+      document.getElementById('savePoster').onclick = function() {
+        let url = canvas.toDataURL("image/png");
+        localStorage.setItem('posterImg', url);
+        window.location.href = 'publish.html';
+      };
+    }
+  }
+  genPoster();
+</script>
+</body>
+</html>
